@@ -73,6 +73,7 @@ end
         xs, ys = random_xs_ys(T,0)
         @inferred trapezoid(xs, ys)
         @test T == typeof(trapezoid(xs,ys))
+
         xs, ys = random_xs_ys(T,2)
         a = b = first(xs)
         @inferred trapezoid(xs, ys, a, b)
@@ -85,4 +86,16 @@ end
     @test trapezoid(xs,ys) == integral(xs,ys)
     a,b = extrema(xs)
     @test trapezoid(xs,ys,a,b) == integral(xs,ys, window=(a,b))
+end
+
+@testset "Range and Vector consistent" begin
+    for _ in 1:100
+        xs = linspace(sort!(randn(2))..., rand(2:20))
+        ys = randn(length(xs))
+        @test integral(xs, ys) ≈ integral([xs;],ys)
+        w1,w2= sort!(rand(2))
+        a = minimum(xs) + w1 * (maximum(xs) - minimum(xs))
+        b = minimum(xs) + w2 * (maximum(xs) - minimum(xs))
+        @test integral(xs, ys, window=(a,b)) ≈ integral([xs;],ys, window=(a,b))
+    end
 end

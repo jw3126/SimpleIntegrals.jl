@@ -33,6 +33,14 @@ function trapezoid_kernel(T,xs, ys, index)
     end
     ret / 2
 end
+function trapezoid_kernel(T,xs::Range, ys, index)
+    ret = zero(T)
+    ret += ys[first(index)-1]/2
+    ret -= ys[last(index)]/2
+    ret += sum(view(ys, index))
+    ret *= step(xs)
+    ret
+end
 
 function trapezoid(xs, ys, a,b)
     @argcheck !isempty(xs)
@@ -67,7 +75,6 @@ function trapezoid(xs, ys, a,b)
     end
     ret
 end
-
 
 function linterpol(x,x1,x2,y1,y2)
     @argcheck x1 <= x <= x2

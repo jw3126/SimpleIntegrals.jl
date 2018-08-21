@@ -1,6 +1,7 @@
 using SimpleIntegrals
 using SimpleIntegrals: trapezoid
-using Base.Test
+using Test
+using InteractiveUtils: subtypes
 
 @testset "spike" begin
     xs = [0,1,2]
@@ -51,7 +52,7 @@ end
         n2 = rand(1:10)
         xs1, ys1 = random_xs_ys(Float64,n1)
         xs2, ys2 = random_xs_ys(Float64,n2)
-        xs2 .= xs2 - first(xs2) + last(xs1)
+        xs2 .= xs2 .- first(xs2) .+ last(xs1)
         @assert first(xs2) == last(xs1)
         @test trapezoid(xs1,ys1) + trapezoid(xs2, ys2) ≈
             trapezoid([xs1;xs2], [ys1;ys2])
@@ -90,7 +91,7 @@ end
 
 @testset "Range and Vector consistent" begin
     for _ in 1:100
-        xs = linspace(sort!(randn(2))..., rand(2:20))
+        xs = range(randn(), length=rand(2:30), step=10rand())
         ys = randn(length(xs))
         @test integral(xs, ys) ≈ integral([xs;],ys)
         w1,w2= sort!(rand(2))

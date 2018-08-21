@@ -33,7 +33,7 @@ function trapezoid_kernel(T,xs, ys, index)
     end
     ret / 2
 end
-function trapezoid_kernel(T,xs::Range, ys, index)
+function trapezoid_kernel(T,xs::AbstractRange, ys, index)
     ret = zero(T)
     ret += ys[first(index)-1]/2
     ret -= ys[last(index)]/2

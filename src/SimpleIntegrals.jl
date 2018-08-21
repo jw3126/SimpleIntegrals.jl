@@ -19,9 +19,8 @@ function arithmetic_closure(T, S)
 end
 
 function trapezoid(xs, ys)
-    @argcheck eachindex(xs) == eachindex(ys) DimensionMismatch
     @argcheck issorted(xs)
-    index = eachindex(xs)[2:end]
+    index = eachindex(xs, ys)[2:end]
     T = arithmetic_closure(eltype(xs), eltype(ys))
     trapezoid_kernel(T,xs,ys,index)
 end

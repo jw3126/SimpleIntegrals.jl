@@ -3,17 +3,16 @@ module SimpleIntegrals
 export integral
 using ArgCheck
 
-function integral(xs, ys; window=nothing)
-    if window == nothing
-        trapezoid(xs,ys)
-    else
-        @argcheck length(window) == 2
-        a,b = window
-        trapezoid(xs,ys,a,b)
-    end
+integral(xs, ys; window=nothing) = _integral(xs, ys, window)
+_integral(xs, ys, ::Nothing) = trapezoid(xs, ys)
+
+function _integral(xs, ys,window)
+    @argcheck length(window) == 2
+    a,b = window
+    trapezoid(xs,ys,a,b)
 end
 
-function compute_trapezoid_return_type(T, S)
+function compute_trapezoid_return_type(::Type{T}, ::Type{S}) where {T,S}
     p = (zero(T) * zero(S)) / 2
     typeof(p + p)
 end
@@ -25,14 +24,15 @@ function trapezoid(xs, ys)
     trapezoid_kernel(T,xs,ys,index)
 end
 
-function trapezoid_kernel(T,xs, ys, index)
-    ret = zero(T)
+function trapezoid_kernel(::Type{T},xs, ys, index) where {T}
+    ret = zero(T)::T
     @simd for i in index
-        @inbounds ret += (xs[i] - xs[i-1]) * (ys[i] + ys[i-1])
+        Δ::T = (xs[i] - xs[i-1]) * (ys[i] + ys[i-1])
+        @inbounds ret += Δ
     end
-    ret / 2
+    ret::T / 2
 end
-function trapezoid_kernel(T,xs::AbstractRange, ys, index)
+function trapezoid_kernel(::Type{T},xs::AbstractRange, ys, index) where {T}
     ret = zero(T)
     ret += ys[first(index)-1]/2
     ret -= ys[last(index)]/2
@@ -50,8 +50,8 @@ function trapezoid(xs, ys, a,b)
     length(xs) == 1 && return zero(T)
     i1 = searchsortedfirst(xs, a)
     i2 = searchsortedlast(xs, b)
-    @check get(xs, i1-1, -T(Inf)) <= a <= xs[i1]
-    @check xs[i2] <= b <= get(xs, i2+1, T(Inf))
+    @check get(xs, i1-1, -Inf*oneunit(a)) <= a <= xs[i1]
+    @check xs[i2] <= b <= get(xs, i2+1, Inf*oneunit(b))
     if i2 < i1
          ya = linterpol(a, xs[i1-1], xs[i1], ys[i1-1], ys[i1])
          yb = linterpol(b, xs[i2], xs[i2+1], ys[i2], ys[i2+1])

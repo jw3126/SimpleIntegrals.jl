@@ -2,8 +2,28 @@ using SimpleIntegrals
 using SimpleIntegrals: trapezoid
 using Test
 using InteractiveUtils: subtypes
+using BenchmarkTools: @benchmark
 
 using Unitful: Unitful
+
+@testset "perf" begin
+    N = 10000
+    @info "Benchmarking on array of $N elements"
+    for (xs, ys) in [
+                     (sort!(randn(N)), randn(N)),
+                     (1:N, randn(N)),
+                     (sort!(randn(N))*Unitful.cm, randn(N)*Unitful.V),
+                    ]
+        b = @benchmark integral($xs, $ys) evals=2 samples=2
+        @test b.allocs < 50
+        display(b)
+
+        window = (first(xs), last(xs))
+        b = @benchmark integral($(xs), $ys, window=$window) evals=2 samples=2
+        @test b.allocs < 50
+        display(b)
+    end
+end
 
 @testset "Unitful" begin
     xs = [0.0, 1.0] * Unitful.s

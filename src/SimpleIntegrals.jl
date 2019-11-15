@@ -13,15 +13,15 @@ function integral(xs, ys; window=nothing)
     end
 end
 
-function arithmetic_closure(T, S)
-    p = (zero(T) + zero(S))
-    typeof(p*p / 1)
+function compute_trapezoid_return_type(T, S)
+    p = (zero(T) * zero(S)) / 2
+    typeof(p + p)
 end
 
 function trapezoid(xs, ys)
     @argcheck issorted(xs)
     index = eachindex(xs, ys)[2:end]
-    T = arithmetic_closure(eltype(xs), eltype(ys))
+    T = compute_trapezoid_return_type(eltype(xs), eltype(ys))
     trapezoid_kernel(T,xs,ys,index)
 end
 
@@ -46,7 +46,7 @@ function trapezoid(xs, ys, a,b)
     @argcheck first(xs) <= a <= b <= last(xs)
     @argcheck eachindex(xs) == eachindex(ys) DimensionMismatch
     @argcheck issorted(xs)
-    T = arithmetic_closure(eltype(xs), eltype(ys))
+    T = compute_trapezoid_return_type(eltype(xs), eltype(ys))
     length(xs) == 1 && return zero(T)
     i1 = searchsortedfirst(xs, a)
     i2 = searchsortedlast(xs, b)

@@ -3,6 +3,15 @@ using SimpleIntegrals: trapezoid
 using Test
 using InteractiveUtils: subtypes
 
+using Unitful: Unitful
+
+@testset "Unitful" begin
+    xs = [0.0, 1.0] * Unitful.s
+    ys = [1, 2] * Unitful.m
+    @inferred integral(xs, ys)
+    @test integral(xs, ys) ≈ 1.5*Unitful.m * Unitful.s
+end
+
 @testset "spike" begin
     xs = [0,1,2]
     ys = [0,1,0]

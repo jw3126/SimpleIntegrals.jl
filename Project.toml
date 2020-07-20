@@ -1,12 +1,12 @@
 name = "SimpleIntegrals"
 uuid = "c106d4f1-74b1-53cf-8919-47dd3f5c79fb"
-version = "0.2.1"
+version = "0.2.2"
 
 [deps]
 ArgCheck = "dce04be8-c92d-5529-be00-80e4d2c0e197"
 
 [compat]
-ArgCheck = "1"
+ArgCheck = "1, 2"
 julia = "1"
 
 [extras]

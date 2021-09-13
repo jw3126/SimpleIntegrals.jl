@@ -1,9 +1,7 @@
 # SimpleIntegrals
 
 
-[![Build Status](https://travis-ci.org/jw3126/SimpleIntegrals.jl.svg?branch=master)](https://travis-ci.org/jw3126/SimpleIntegrals.jl)
-[![codecov.io](https://codecov.io/github/jw3126/SimpleIntegrals.jl/coverage.svg?branch=master)](http://codecov.io/github/jw3126/SimpleIntegrals.jl?branch=master)
-
+[![Build Status](https://github.com/jw3126/SimpleIntegrals.jl/workflows/CI/badge.svg)](https://github.com/jw3126/SimpleIntegrals.jl/actions)
 # Usage
 ```julia
 using SimpleIntegrals
